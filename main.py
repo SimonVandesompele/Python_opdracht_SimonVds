@@ -1,25 +1,6 @@
 from app.classes.animal import Animal
 from app.db.database import Database
 
-def add_animal(database):
-    while True:
-        try:
-            name = input("Enter the name of the animal: ")
-            if not name:
-                raise ValueError("Field cannot be empty.")
-            
-            species = input("Enter the species of the animal: ")
-            if not species:
-                raise ValueError("Field cannot be empty.")
-            
-            new_animal = Animal(name, species)
-            database.add_animal(new_animal)
-
-            print(f"Animal '{name}' has been added.")
-            break
-
-        except ValueError as e:
-            print(f"Error: {e}")
 
 def display_all_animals(database):
     animals = database.get_all_animals()
