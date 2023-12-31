@@ -137,11 +137,11 @@ def main():
             remove_zoo(database)    
 
         elif choice == "7":
-            print("Application is being stopped.")
+            print("Application is stopped.")
             break
 
         else:
-            print("Invalid choice. Please try again.")
+            print("Please enter a valid number.")
 
     database.close_connection()
 
