@@ -1,6 +1,9 @@
+import csv
 from app.classes.animal import Animal
-from app.db.database import Database
 from app.classes.zoo import Zoo
+from app.db.database import Database
+
+
 
 def add_animal(database):
     while True:
@@ -31,12 +34,55 @@ def display_all_animals(database):
     else:
         print("No animals found in the database.")
 
+def add_animal(database):
+    while True:
+        try:
+            name = input("Enter the name of the animal: ")
+            if not name:
+                raise ValueError("Field cannot be empty.")
+            
+            species = input("Enter the species of the animal: ")
+            if not species:
+                raise ValueError("Field cannot be empty.")
+            
+            new_animal = Animal(name, species)
+            database.add_animal(new_animal)
+            print(f"Animal '{name}' has been added.")
+            break
+        except ValueError as e:
+            print(f"Error: {e}")
+
+def generate_csv_report(animals, filename="animal_report.csv"):
+    """Generate a CSV report of animals."""
+    with open(filename, "w", newline="") as csvfile:
+        fieldnames = ["ID", "Name", "Species"]
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+
+        writer.writeheader()
+        for animal in animals:
+            writer.writerow({"ID": animal[0], "Name": animal[1], "Species": animal[2]})
+
 def display_all_animals(database):
     animals = database.get_all_animals()
     if animals:
         print("All animals in the database:")
         for animal in animals:
             print(f"ID: {animal[0]}, Name: {animal[1]}, Species: {animal[2]}")
+
+        while True:
+            try:
+                report_choice = input("Do you want to generate a CSV report? (yes/no): ").lower()
+                if report_choice == "yes":
+                    generate_csv_report(animals)
+                    print("CSV report generated as 'animal_report.csv'")
+                    break
+                elif report_choice == "no":
+                    print("No CSV report generated.")
+                    break
+                else:
+                    raise ValueError("Invalid choice. Please enter 'yes' or 'no'.")
+            except ValueError as e:
+                print(f"Error: {e}")
     else:
         print("No animals found.")
 
@@ -67,7 +113,6 @@ def display_all_zoos(database):
             print(f"ID: {zoo[0]}, Name: {zoo[1]}, Location: {zoo[2]}")
     else:
         print("No zoos found in the database.")
-
 
 def main():
     db_path = "app/db/database.db"
