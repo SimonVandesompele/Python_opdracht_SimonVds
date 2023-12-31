@@ -1,12 +1,10 @@
 import sqlite3
-from app.classes.animal import Animal
 
 class Database:
     def __init__(self, db_path):
-        self.connetion = sqlite3.connect(db_path)
-        self.cursor = self.connetion.cursor()
+        self.connection = sqlite3.connect(db_path)
+        self.cursor = self.connection.cursor()
         self.create_tables()
-
 
     def create_tables(self):
         self.cursor.execute('''
@@ -25,13 +23,12 @@ class Database:
             )
         ''')
 
-
     def add_animal(self, animal):
         self.cursor.execute('''
             INSERT INTO animals (name, species)
             VALUES (?, ?)
         ''', (animal.name, animal.species))
-        self.connetion.commit()
+        self.connection.commit()
 
     def get_all_animals(self):
         self.cursor.execute('SELECT * FROM animals')
@@ -42,12 +39,19 @@ class Database:
             INSERT INTO zoos (name, location)
             VALUES (?, ?)
         ''', (zoo.name, zoo.location))
-        self.connetion.commit()
+        self.connection.commit()
 
     def get_all_zoos(self):
         self.cursor.execute('SELECT * FROM zoos')
         return self.cursor.fetchall()
 
+    def remove_animal(self, animal_id):
+        self.cursor.execute('DELETE FROM animals WHERE id = ?', (animal_id,))
+        self.connection.commit()
+
+    def remove_zoo(self, zoo_id):
+        self.cursor.execute('DELETE FROM zoos WHERE id = ?', (zoo_id,))
+        self.connection.commit()
 
     def close_connection(self):
-        self.connetion.close()
+        self.connection.close()
